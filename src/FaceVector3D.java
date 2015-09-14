@@ -14,6 +14,10 @@ public class FaceVector3D extends Vector3D {
         super(x, y, z);
     }
 
+    public void setDimension(int u){
+        dimension = u;
+    }
+
     public int getDimension() {
         int dimensionBuffer = dimension;
         int counter = 0;

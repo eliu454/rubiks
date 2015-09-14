@@ -4,10 +4,13 @@ public class Cube {
     private Array3D<CubePiece> rubiksCube = new Array3D<>(-1, 1);
     public static final Character[] faceColors = {'W', 'Y', 'R', 'O', 'B', 'G'};
     public static final Character[] faces = {'F', 'B', 'R', 'L', 'U', 'D'};
+    public static final Character[] slices = {'S', 'M', 'E'};
+    public static Map<Character, FaceVector3D> sliceVecMap = new HashMap<>();
     public static Map<Character, FaceVector3D> faceVecMap = new HashMap<>();
 
     public Cube() {
         initFaceVecMap();
+        initSliceVecMap();
         initPieces();
         initStickers();
 
@@ -69,6 +72,13 @@ public class Cube {
             FaceVector3D faceVec2 = new FaceVector3D(0, 0, 0);
             faceVec2.setVal(dim, -1);
             faceVecMap.put(faces[2 * dim + 1], faceVec2);
+        }
+    }
+    private void initSliceVecMap(){
+        for(int dim = 0; dim < slices.length; dim++){
+            FaceVector3D faceVec1 = new FaceVector3D(0,0,0);
+            faceVec1.setDimension(dim);
+            sliceVecMap.put(slices[dim], faceVec1);
         }
     }
     public static char[][] flipVertical(char[][] arr){
@@ -133,12 +143,32 @@ public class Cube {
     public void moveParse(String moves){
         StringTokenizer st = new StringTokenizer(moves);
         while(st.hasMoreTokens()){
-            move(st.nextToken());
+            String nextMove = st.nextToken();
+            if(Character.isLowerCase(nextMove.charAt(0))){
+                String faceMove = nextMove.toUpperCase();
+                int faceIndex = Arrays.binarySearch(faces, faceMove.charAt(0));
+                int sliceIndex = faceIndex/2;
+                String sliceMove = slices[sliceIndex].toString();
+                if(faceMove.length() == 1){
+                    sliceMove += "'";
+                }
+                move(faceMove);
+                move(sliceMove);
+            }
+            else{
+                move(nextMove);
+            }
         }
     }
     public void move(String face){
         List<CubePiece> pieceList = new ArrayList<>();
-        FaceVector3D faceVec = faceVecMap.get(face.charAt(0));
+        FaceVector3D faceVec;
+        if(faceVecMap.containsKey(face.charAt(0))){
+            faceVec = faceVecMap.get(face.charAt(0));
+        }
+        else{
+            faceVec = sliceVecMap.get(face.charAt(0));
+        }
         for(int[] pos:faceVec.getPiecePosOnFace()){
             CubePiece currPiece = rubiksCube.getAtPos(pos);
             pieceList.add(currPiece);
@@ -153,7 +183,7 @@ public class Cube {
 
     public static void main(String[] args) {
         Cube c = new Cube();
-        c.moveParse("R U R' U' R U R' U' R U R' U' R U R' U' R U R' U' R U R' U' ");
+        c.moveParse("r'");
         c.printCube();
 
     }

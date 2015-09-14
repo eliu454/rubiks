@@ -43,31 +43,37 @@ public class CubePiece {
         switch (face) {
             case "U":
             case "D'":
+            case "E'":
                 x = 0;
                 y = 1;
                 break;
             case "D":
             case "U'":
+            case "E":
                 x = 1;
                 y = 0;
                 break;
             case "R":
             case "L'":
+            case "M'":
                 x = 2;
                 y = 0;
                 break;
             case "L":
             case "R'":
+            case "M":
                 x = 0;
                 y = 2;
                 break;
             case "F":
             case "B'":
+            case "S":
                 x = 1;
                 y = 2;
                 break;
             case "B":
             case "F'":
+            case "S'":
                 x = 2;
                 y = 1;
                 break;
